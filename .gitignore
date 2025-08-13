@@ -35,6 +35,7 @@ yarn-error.log*
 
 # Example folder (reference only, not to be modified)
 claude-conversation-exporter/
+conversations_v2 (1).json
 
 # Development instruction files
 Project-conversations-exporter-instruction.MD

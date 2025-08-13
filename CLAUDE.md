@@ -17,8 +17,9 @@ This is a **Claude Project Conversations Exporter** - a comprehensive JavaScript
 
 ### Key Files:
 - `claude_project_export_script.js` - Main export script (paste into console)
-- `claude_project_bookmarklet.js` - Bookmarklet version for easy access
-- `bookmarklet.html` - User-friendly installation page
+- `claude_project_exporter.user.js` - Tampermonkey/Greasemonkey userscript
+- `claude_project_bookmarklet.js` - Deprecated bookmarklet (reference only)
+- `install.html` - Installation guide for all methods
 - `README.md` - Comprehensive documentation
 - `CLAUDE.md` - This development context file
 

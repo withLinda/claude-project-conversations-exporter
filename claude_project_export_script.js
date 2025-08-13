@@ -235,18 +235,18 @@ async function fetchConversationsList(orgId, projectId) {
         
         const data = await response.json();
         
-        // Validate response structure
-        if (!data.conversations || !Array.isArray(data.conversations)) {
-            console.warn('⚠️ Unexpected response structure:', data);
-            // Try alternative structure
-            if (Array.isArray(data)) {
-                return data; // Sometimes API returns array directly
-            }
-            throw new Error('Invalid response structure');
+        // The API returns { data: [...] } not { conversations: [...] }
+        if (data.data && Array.isArray(data.data)) {
+            console.log(`✅ Found ${data.data.length} conversations`);
+            return data.data;
+        } else if (Array.isArray(data)) {
+            // Fallback for direct array response
+            console.log(`✅ Found ${data.length} conversations`);
+            return data;
+        } else {
+            console.error('⚠️ Unexpected response structure:', data);
+            throw new Error('Invalid response structure - expected data.data array');
         }
-        
-        console.log(`✅ Found ${data.conversations.length} conversations`);
-        return data.conversations;
         
     } catch (error) {
         console.error('❌ Failed to fetch conversations list:', error);
