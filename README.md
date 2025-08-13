@@ -6,7 +6,7 @@ A comprehensive JavaScript tool that exports **ALL conversations** from a Claude
 
 ## 🚀 Quick Start
 
-**📋 [Full Installation Guide with Screenshots →](install.html)**
+**📋 [Full Installation Guide with Screenshots →](https://withlinda.github.io/claude-project-conversations-exporter/)**
 
 ### Method 1: Browser Console (100% Reliable)
 
