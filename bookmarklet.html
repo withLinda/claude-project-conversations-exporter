@@ -75,7 +75,7 @@
     <div class="bookmarklet">
         <h3>Method 1: Drag the Bookmarklet</h3>
         <p>Drag this link to your bookmarks bar:</p>
-        <p><strong>⚠️ Note:</strong> The complete script is too large for a bookmarklet. Please use the manual console method below instead.</p>
+        <a href="javascript:(function(){var script=document.createElement('script');script.src='https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_export_script.js?v='+Date.now();document.head.appendChild(script);})();" class="bookmarklet-link">📋 Export Claude Project</a>
         
         <p><strong>Alternative method:</strong> Right-click the link above → "Add to bookmarks" or "Bookmark this link"</p>
     </div>
@@ -83,7 +83,11 @@
     <div class="bookmarklet">
         <h3>Method 2: Manual Bookmarklet Creation</h3>
         <div class="step">
-            <strong>Step 1:</strong> Copy the entire contents of `claude_project_bookmarklet.js`
+            <strong>Step 1:</strong> Copy this code:
+            <div class="code-block">
+                <code id="bookmarklet-code">javascript:(function(){var script=document.createElement('script');script.src='https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_export_script.js?v='+Date.now();document.head.appendChild(script);})();</code>
+            </div>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('bookmarklet-code').textContent).then(()=>alert('Bookmarklet code copied to clipboard!'))">📋 Copy Code</button>
         </div>
         
         <div class="step">
@@ -180,16 +184,20 @@
 
     <h2>🔄 Manual Console Method</h2>
     
-    <p><strong>Recommended Method:</strong> The embedded bookmarklet is too large for HTML attributes, so the console method is the most reliable approach:</p>
+    <p><strong>Alternative Console Method:</strong> If the bookmarklet doesn't work, you can load the script manually:</p>
     
     <div class="step">
         <strong>Step 1:</strong> Open browser console (F12)
     </div>
     
     <div class="step">
-        <strong>Step 2:</strong> Copy and paste the contents of `claude_project_bookmarklet.js` file:
+        <strong>Step 2:</strong> Copy and paste this code:
         <div class="code-block">
-            <small>The complete embedded script is available in the <code>claude_project_bookmarklet.js</code> file in this project.</small>
+            <code>
+var script = document.createElement('script');
+script.src = 'https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_export_script.js?v=' + Date.now();
+document.head.appendChild(script);
+            </code>
         </div>
     </div>
     
@@ -208,7 +216,8 @@
 
     <div class="success">
         <strong>🎉 Ready to export your Claude Project conversations?</strong><br>
-        Drag the bookmarklet to your bookmarks bar and click it on any Claude Project page!
+        Drag the bookmarklet above to your bookmarks bar and click it on any Claude Project page!<br>
+        <strong>Note:</strong> The bookmarklet automatically loads the latest version from GitHub.
     </div>
 
 </body>
