@@ -1,5 +1,12 @@
 # Claude Project Conversations Exporter
 
+## 🔗 Related Tools
+
+- **[Claude Project Knowledge Exporter](https://github.com/withLinda/claude-project-knowledge-exporter)** - Export project knowledge and artifacts from Claude Projects
+- **[Claude Conversation Exporter](https://github.com/withLinda/claude-conversation-exporter)** - Export individual Claude conversations to Markdown
+
+---
+
 A comprehensive JavaScript tool that exports **ALL conversations** from a Claude Project (not just single conversations). This tool extracts project and organization IDs, fetches all conversations in a project, and converts them to well-formatted Markdown files.
 
 > **⚠️ Important Update**: Bookmarklets no longer work due to Content Security Policy restrictions on modern websites like claude.ai. Use one of the methods below instead.
