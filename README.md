@@ -2,7 +2,7 @@
 
 ## 🔗 Related Tools
 
-- **[Claude Project Knowledge Exporter](https://github.com/withLinda/claude-project-knowledge-exporter)** - Export project knowledge and artifacts from Claude Projects
+- **[Claude Project Knowledge Exporter](https://github.com/withLinda/claude-project-knowledge-exporter)** - Export project documentation and knowledge from Claude Projects  
 - **[Claude Conversation Exporter](https://github.com/withLinda/claude-conversation-exporter)** - Export individual Claude conversations to Markdown
 
 ---
