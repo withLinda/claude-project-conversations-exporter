@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Project Conversations Exporter - Installation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .method {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .method.recommended {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        .method.recommended::before {
+            content: "⭐ RECOMMENDED";
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #28a745;
+            color: white;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 12px;
+        }
+        .install-button {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .install-button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .install-button.tampermonkey {
+            background: #00b8d4;
+        }
+        .install-button.tampermonkey:hover {
+            background: #0097a7;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 15px 0;
+            position: relative;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4a5568;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .copy-button:hover {
+            background: #2d3748;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .step {
+            background: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+        }
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .pros, .cons {
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .pros {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .cons {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            text-align: center;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .checkmark { color: #28a745; }
+        .xmark { color: #dc3545; }
+        .deprecated {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            .pros-cons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Claude Project Conversations Exporter</h1>
+    <p><strong>Export ALL conversations from a Claude Project with ease</strong></p>
+
+    <div class="error">
+        <h3>🚨 Important Update: Bookmarklets No Longer Work</h3>
+        <p><strong>Due to modern browser security policies (Content Security Policy), bookmarklets cannot load external scripts or run large inline code on sites like claude.ai.</strong></p>
+        <p>We've replaced the broken bookmarklet approach with two reliable methods below.</p>
+    </div>
+
+    <div class="comparison-table-container">
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Ease of Use</th>
+                    <th>Browser Support</th>
+                    <th>Auto-Updates</th>
+                    <th>Security</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>🖥️ Console Method</strong></td>
+                    <td>Medium</td>
+                    <td><span class="checkmark">✅</span> All Browsers</td>
+                    <td><span class="xmark">❌</span> Manual</td>
+                    <td><span class="checkmark">✅</span> High</td>
+                </tr>
+                <tr>
+                    <td><strong>🔧 Tampermonkey</strong></td>
+                    <td>Easy</td>
+                    <td><span class="checkmark">✅</span> Chrome, Firefox, Edge</td>
+                    <td><span class="checkmark">✅</span> Automatic</td>
+                    <td><span class="checkmark">✅</span> High</td>
+                </tr>
+                <tr style="opacity: 0.5;">
+                    <td><del>📑 Bookmarklet</del></td>
+                    <td>Easy</td>
+                    <td><span class="xmark">❌</span> Blocked by CSP</td>
+                    <td><span class="xmark">❌</span> No</td>
+                    <td><span class="xmark">❌</span> Blocked</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>📦 Installation Methods</h2>
+
+    <!-- Method 1: Console (Recommended for Universal Compatibility) -->
+    <div class="method recommended">
+        <h3>🖥️ Method 1: Browser Console (100% Reliable)</h3>
+        <p><strong>Works on ALL browsers and bypasses ALL security restrictions</strong></p>
+        
+        <div class="pros-cons">
+            <div class="pros">
+                <h4>✅ Pros:</h4>
+                <ul>
+                    <li>Works on every browser</li>
+                    <li>No extensions needed</li>
+                    <li>Bypasses all CSP restrictions</li>
+                    <li>Always up-to-date script</li>
+                </ul>
+            </div>
+            <div class="cons">
+                <h4>❌ Cons:</h4>
+                <ul>
+                    <li>Need to paste code each time</li>
+                    <li>Requires opening console (F12)</li>
+                    <li>Slightly more technical</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <strong>Step 1:</strong> Navigate to a Claude Project page<br>
+            <small>URL should look like: <code>https://claude.ai/project/12345678-1234-1234-1234-123456789abc</code></small>
+        </div>
+
+        <div class="step">
+            <strong>Step 2:</strong> Open browser console<br>
+            <small>Press <kbd>F12</kbd> or right-click → "Inspect" → "Console" tab</small>
+        </div>
+
+        <div class="step">
+            <strong>Step 3:</strong> Copy and paste this code:
+            <div class="warning">
+                <strong>⚠️ Note:</strong> If script loading fails (due to Content-Type headers), use the full script copy method below instead.
+            </div>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyConsoleScript()">📋 Copy</button>
+                <pre id="console-script">// Loading the latest version of Claude Project Exporter...
+var script = document.createElement('script');
+script.src = 'https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_export_script.js?v=' + Date.now();
+script.onerror = function() {
+    console.error('❌ Failed to load script. Please check your internet connection or try the manual method.');
+};
+script.onload = function() {
+    console.log('✅ Script loaded successfully! Export will start automatically...');
+};
+document.head.appendChild(script);</pre>
+            </div>
+            <div class="step">
+                <strong>Alternative (More Reliable):</strong> Copy full script content:
+                <div style="margin: 10px 0;">
+                    <a href="https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_export_script.js" 
+                       target="_blank" class="install-button">
+                        📄 View Full Script Content
+                    </a>
+                </div>
+                <small>Open the link above, copy ALL content, and paste directly into console for 100% reliability</small>
+            </div>
+        </div>
+
+        <div class="step">
+            <strong>Step 4:</strong> Press Enter and wait<br>
+            <small>The export will start automatically. Files will download to your default downloads folder.</small>
+        </div>
+    </div>
+
+    <!-- Method 2: Tampermonkey (Recommended for Regular Users) -->
+    <div class="method recommended">
+        <h3>🔧 Method 2: Tampermonkey (Best User Experience)</h3>
+        <p><strong>One-time setup, then just click a button on any project page</strong></p>
+        
+        <div class="pros-cons">
+            <div class="pros">
+                <h4>✅ Pros:</h4>
+                <ul>
+                    <li>One-click export button</li>
+                    <li>Automatic script updates</li>
+                    <li>No console needed</li>
+                    <li>Works across browser sessions</li>
+                </ul>
+            </div>
+            <div class="cons">
+                <h4>❌ Cons:</h4>
+                <ul>
+                    <li>Requires installing extension</li>
+                    <li>Chrome, Firefox, Edge only</li>
+                    <li>One-time setup required</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="step">
+            <strong>Step 1:</strong> Install Tampermonkey extension<br>
+            <div style="margin: 10px 0;">
+                <a href="https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" class="install-button" target="_blank">
+                    📧 Chrome Web Store
+                </a>
+                <a href="https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/" class="install-button" target="_blank">
+                    🦊 Firefox Add-ons
+                </a>
+                <a href="https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd" class="install-button" target="_blank">
+                    🌐 Edge Add-ons
+                </a>
+            </div>
+        </div>
+
+        <div class="step">
+            <strong>Step 2:</strong> Install the userscript<br>
+            <a href="https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_exporter.user.js" 
+               class="install-button tampermonkey" target="_blank">
+                🔧 Install Claude Project Exporter Script
+            </a><br>
+            <small>Click the link above, then click "Install" in the Tampermonkey dialog</small>
+        </div>
+
+        <div class="step">
+            <strong>Step 3:</strong> Use the exporter<br>
+            <small>Navigate to any Claude project page and click the "📋 Export Project" button that appears in the top-right corner!</small>
+        </div>
+    </div>
+
+    <!-- Deprecated Bookmarklet Notice -->
+    <div class="deprecated">
+        <h3>🚫 Why Bookmarklets No Longer Work</h3>
+        <p><strong>Technical Explanation:</strong> Modern websites like claude.ai use Content Security Policy (CSP) headers that prevent:</p>
+        <ul>
+            <li>External script loading from bookmarklets</li>
+            <li>Large inline scripts (our script is 17KB+, browsers limit bookmarklets to ~2KB)</li>
+            <li>Dynamic script injection for security reasons</li>
+        </ul>
+        <p>This is why the old bookmarklet approach has been deprecated. The methods above work reliably because:</p>
+        <ul>
+            <li><strong>Console method:</strong> User-initiated scripts bypass CSP restrictions</li>
+            <li><strong>Tampermonkey:</strong> Browser extensions run in privileged contexts not affected by CSP</li>
+        </ul>
+    </div>
+
+    <h2>📁 What Gets Exported?</h2>
+    
+    <div class="feature-grid">
+        <div class="feature">
+            <h4>💬 All Conversations</h4>
+            <p>Every conversation in the project, not just one</p>
+        </div>
+        <div class="feature">
+            <h4>🧠 Thinking Process</h4>
+            <p>Claude's complete reasoning and thought process</p>
+        </div>
+        <div class="feature">
+            <h4>🛠️ Tool Usage</h4>
+            <p>All tool calls and their results</p>
+        </div>
+        <div class="feature">
+            <h4>📎 Attachments</h4>
+            <p>File attachments and extracted content</p>
+        </div>
+        <div class="feature">
+            <h4>⏰ Timestamps</h4>
+            <p>Complete metadata and timestamps</p>
+        </div>
+        <div class="feature">
+            <h4>📋 Index Files</h4>
+            <p>Organized navigation and overview</p>
+        </div>
+    </div>
+
+    <h2>🔧 Output Formats</h2>
+    
+    <table class="comparison-table">
+        <tr>
+            <th>Project Size</th>
+            <th>Output Format</th>
+            <th>Files Generated</th>
+        </tr>
+        <tr>
+            <td>≤ 20 conversations</td>
+            <td>Individual files</td>
+            <td><code>index.md</code> + individual <code>.md</code> files</td>
+        </tr>
+        <tr>
+            <td>21-100 conversations</td>
+            <td>Combined file</td>
+            <td>Single <code>claude_project_[id]_export.md</code></td>
+        </tr>
+        <tr>
+            <td>101-200 conversations</td>
+            <td>Chunked processing</td>
+            <td>Single combined file (memory optimized)</td>
+        </tr>
+        <tr>
+            <td>> 200 conversations</td>
+            <td>Multiple chunks</td>
+            <td><code>index.md</code> + <code>chunk_01.md</code>, <code>chunk_02.md</code>, etc.</td>
+        </tr>
+    </table>
+
+    <h2>🛠️ Troubleshooting</h2>
+
+    <div class="warning">
+        <strong>🔧 Common Issues & Solutions:</strong>
+        <ul>
+            <li><strong>"Not on a project page"</strong> → Make sure you're on a URL like <code>claude.ai/project/[uuid]</code></li>
+            <li><strong>"Authentication failed"</strong> → Make sure you're logged into Claude.ai first</li>
+            <li><strong>"Script loading failed"</strong> → Check your internet connection or use the console method</li>
+            <li><strong>"Downloads blocked"</strong> → Allow multiple downloads in your browser settings</li>
+            <li><strong>Tampermonkey not working</strong> → Try the console method as a backup</li>
+        </ul>
+    </div>
+
+    <h2>🔒 Privacy & Security</h2>
+    
+    <div class="success">
+        <ul>
+            <li><strong>✅ Client-side only:</strong> No data sent to external servers</li>
+            <li><strong>✅ Uses your session:</strong> Leverages your existing Claude.ai login</li>
+            <li><strong>✅ Local processing:</strong> All conversion happens in your browser</li>
+            <li><strong>✅ No tracking:</strong> No analytics or data collection</li>
+            <li><strong>✅ Open source:</strong> All code is publicly available on GitHub</li>
+        </ul>
+    </div>
+
+    <div class="success">
+        <p><strong>🎉 Ready to export your Claude Project conversations?</strong></p>
+        <p>Choose the method that works best for you:</p>
+        <ul>
+            <li><strong>Console method</strong> for guaranteed compatibility</li>
+            <li><strong>Tampermonkey</strong> for the best user experience</li>
+        </ul>
+    </div>
+
+    <script>
+        function copyConsoleScript() {
+            const script = document.getElementById('console-script').textContent;
+            navigator.clipboard.writeText(script).then(() => {
+                const button = document.querySelector('.copy-button');
+                const originalText = button.textContent;
+                button.textContent = '✅ Copied!';
+                button.style.background = '#28a745';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#4a5568';
+                }, 2000);
+            }).catch(() => {
+                alert('Please manually copy the code from the text box');
+            });
+        }
+    </script>
+</body>
+</html>

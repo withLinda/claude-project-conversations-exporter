@@ -2,7 +2,13 @@
 
 A comprehensive JavaScript tool that exports **ALL conversations** from a Claude Project (not just single conversations). This tool extracts project and organization IDs, fetches all conversations in a project, and converts them to well-formatted Markdown files.
 
+> **⚠️ Important Update**: Bookmarklets no longer work due to Content Security Policy restrictions on modern websites like claude.ai. Use one of the methods below instead.
+
 ## 🚀 Quick Start
+
+**📋 [Full Installation Guide with Screenshots →](install.html)**
+
+### Method 1: Browser Console (100% Reliable)
 
 1. **Navigate to a Claude Project page**  
    URL format: `https://claude.ai/project/[PROJECT-UUID]`
@@ -11,11 +17,40 @@ A comprehensive JavaScript tool that exports **ALL conversations** from a Claude
    - **Chrome/Edge**: Press `F12` or `Ctrl+Shift+I` (Windows) / `Cmd+Option+I` (Mac)
    - **Firefox**: Press `F12` or `Ctrl+Shift+K` (Windows) / `Cmd+Option+K` (Mac)
 
-3. **Copy and paste the entire script**  
-   Copy all contents from `claude_project_export_script.js` into the console and press Enter
+3. **Copy and paste this code into the console:**
+   ```javascript
+   // Loading the latest version of Claude Project Exporter...
+   var script = document.createElement('script');
+   script.src = 'https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_export_script.js?v=' + Date.now();
+   script.onerror = function() { console.error('❌ Failed to load script. Check connection.'); };
+   script.onload = function() { console.log('✅ Script loaded successfully!'); };
+   document.head.appendChild(script);
+   ```
 
 4. **Wait for the export to complete**  
    The tool will automatically detect your project and organization IDs, fetch all conversations, and download the files.
+
+### Method 2: Tampermonkey (Best User Experience)
+
+1. **Install Tampermonkey extension:**
+   - [Chrome Web Store](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
+   - [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
+   - [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
+
+2. **Install the userscript:**
+   - Click: [**Install Claude Project Exporter**](https://raw.githubusercontent.com/withLinda/claude-project-conversations-exporter/main/claude_project_exporter.user.js)
+   - Click "Install" in the Tampermonkey dialog
+
+3. **Use the exporter:**
+   - Navigate to any Claude project page
+   - Click the "📋 Export Project" button that appears in the top-right corner
+
+### 🎯 Method Comparison
+
+| Method | Best For | Pros | Cons |
+|--------|----------|------|------|
+| **🖥️ Console** | Maximum compatibility | ✅ Works on ALL browsers<br>✅ No extensions needed<br>✅ Always latest version | ❌ Need to paste code each time<br>❌ More technical |
+| **🔧 Tampermonkey** | Regular users | ✅ One-click export button<br>✅ Automatic updates<br>✅ No console needed | ❌ Requires extension install<br>❌ Limited browser support |
 
 ## 📋 Features
 
@@ -108,6 +143,15 @@ claude_project_chunk_03.md
 - **No external dependencies**: Pure vanilla JavaScript
 
 ## 🔍 Troubleshooting
+
+### ⚠️ Deprecated: Bookmarklets No Longer Work
+
+**Why bookmarklets stopped working:**
+- Content Security Policy (CSP) on claude.ai blocks external script loading
+- Bookmarklets are limited to ~2KB, but our script is 17KB+
+- Modern browsers increasingly restrict bookmarklet functionality for security
+
+**Use the methods above instead** - they bypass all these restrictions and work reliably.
 
 ### Common Issues
 
