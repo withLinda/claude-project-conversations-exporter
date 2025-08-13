@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Project Conversations Exporter - Bookmarklet</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .bookmarklet {
+            background: #f0f8ff;
+            border: 2px dashed #4a90e2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .bookmarklet-link {
+            display: inline-block;
+            background: #4a90e2;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .bookmarklet-link:hover {
+            background: #357abd;
+        }
+        .code-block {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Claude Project Conversations Exporter</h1>
+    <p><strong>Quick and easy way to export all conversations from a Claude Project</strong></p>
+
+    <div class="warning">
+        <strong>⚠️ Important:</strong> This bookmarklet only works on Claude Project pages with URLs like <code>https://claude.ai/project/[uuid]</code>
+    </div>
+
+    <h2>📖 One-Click Installation</h2>
+    
+    <div class="bookmarklet">
+        <h3>Method 1: Drag the Bookmarklet</h3>
+        <p>Drag this link to your bookmarks bar:</p>
+        <p><strong>⚠️ Note:</strong> The complete script is too large for a bookmarklet. Please use the manual console method below instead.</p>
+        
+        <p><strong>Alternative method:</strong> Right-click the link above → "Add to bookmarks" or "Bookmark this link"</p>
+    </div>
+
+    <div class="bookmarklet">
+        <h3>Method 2: Manual Bookmarklet Creation</h3>
+        <div class="step">
+            <strong>Step 1:</strong> Copy the entire contents of `claude_project_bookmarklet.js`
+        </div>
+        
+        <div class="step">
+            <strong>Step 2:</strong> Create a new bookmark in your browser
+        </div>
+        
+        <div class="step">
+            <strong>Step 3:</strong> Set the bookmark name to "Export Claude Project"
+        </div>
+        
+        <div class="step">
+            <strong>Step 4:</strong> Set the bookmark URL to the code you copied above
+        </div>
+    </div>
+
+    <h2>🎯 How to Use</h2>
+
+    <div class="step">
+        <strong>Step 1:</strong> Navigate to a Claude Project page<br>
+        <small>URL should look like: <code>https://claude.ai/project/12345678-1234-1234-1234-123456789abc</code></small>
+    </div>
+
+    <div class="step">
+        <strong>Step 2:</strong> Click your bookmarklet<br>
+        <small>Click "Export Claude Project" in your bookmarks bar</small>
+    </div>
+
+    <div class="step">
+        <strong>Step 3:</strong> Wait for the export to complete<br>
+        <small>You'll see progress notifications in the top-right corner</small>
+    </div>
+
+    <div class="step">
+        <strong>Step 4:</strong> Download your files<br>
+        <small>Files will automatically download to your default downloads folder</small>
+    </div>
+
+    <div class="success">
+        <strong>✅ That's it!</strong> Your conversations will be exported as Markdown files with full formatting, timestamps, and metadata preserved.
+    </div>
+
+    <h2>📁 What Gets Exported?</h2>
+    
+    <ul>
+        <li><strong>All conversations</strong> in the project (not just one)</li>
+        <li><strong>Complete message history</strong> including Claude's thinking process</li>
+        <li><strong>Tool usage</strong> and results</li>
+        <li><strong>File attachments</strong> and extracted content</li>
+        <li><strong>Timestamps</strong> and metadata</li>
+        <li><strong>Organized index file</strong> for easy navigation</li>
+    </ul>
+
+    <h2>🔧 Output Formats</h2>
+    
+    <table border="1" style="border-collapse: collapse; width: 100%; margin: 15px 0;">
+        <tr>
+            <th style="padding: 10px; background: #f8f9fa;">Project Size</th>
+            <th style="padding: 10px; background: #f8f9fa;">Output Format</th>
+            <th style="padding: 10px; background: #f8f9fa;">Files Generated</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px;">≤ 20 conversations</td>
+            <td style="padding: 10px;">Individual files</td>
+            <td style="padding: 10px;"><code>index.md</code> + individual <code>.md</code> files</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;">21-100 conversations</td>
+            <td style="padding: 10px;">Combined file</td>
+            <td style="padding: 10px;">Single <code>claude_project_[id]_export.md</code></td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;">101-200 conversations</td>
+            <td style="padding: 10px;">Chunked processing</td>
+            <td style="padding: 10px;">Single combined file (memory optimized)</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;">> 200 conversations</td>
+            <td style="padding: 10px;">Multiple chunks</td>
+            <td style="padding: 10px;"><code>index.md</code> + <code>chunk_01.md</code>, <code>chunk_02.md</code>, etc.</td>
+        </tr>
+    </table>
+
+    <h2>🛠️ Troubleshooting</h2>
+
+    <div class="warning">
+        <strong>❌ Common Issues:</strong>
+        <ul>
+            <li><strong>"Not on a project page"</strong> → Make sure you're on a URL like <code>claude.ai/project/[uuid]</code></li>
+            <li><strong>"Authentication failed"</strong> → Log into Claude.ai first</li>
+            <li><strong>"Downloads blocked"</strong> → Allow multiple downloads in your browser</li>
+            <li><strong>Bookmarklet not working</strong> → Try the manual console method below</li>
+        </ul>
+    </div>
+
+    <h2>🔄 Manual Console Method</h2>
+    
+    <p><strong>Recommended Method:</strong> The embedded bookmarklet is too large for HTML attributes, so the console method is the most reliable approach:</p>
+    
+    <div class="step">
+        <strong>Step 1:</strong> Open browser console (F12)
+    </div>
+    
+    <div class="step">
+        <strong>Step 2:</strong> Copy and paste the contents of `claude_project_bookmarklet.js` file:
+        <div class="code-block">
+            <small>The complete embedded script is available in the <code>claude_project_bookmarklet.js</code> file in this project.</small>
+        </div>
+    </div>
+    
+    <div class="step">
+        <strong>Step 3:</strong> Press Enter and wait for the export to complete
+    </div>
+
+    <h2>🔒 Privacy & Security</h2>
+    
+    <ul>
+        <li><strong>Client-side only:</strong> No data sent to external servers</li>
+        <li><strong>Uses your session:</strong> Leverages your existing Claude.ai login</li>
+        <li><strong>Local processing:</strong> All conversion happens in your browser</li>
+        <li><strong>No tracking:</strong> No analytics or data collection</li>
+    </ul>
+
+    <div class="success">
+        <strong>🎉 Ready to export your Claude Project conversations?</strong><br>
+        Drag the bookmarklet to your bookmarks bar and click it on any Claude Project page!
+    </div>
+
+</body>
+</html>
