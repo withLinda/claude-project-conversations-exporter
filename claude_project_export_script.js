@@ -296,7 +296,7 @@ async function fetchAllConversations(orgId, conversationsList, batchSize = 5) {
     // Show progress
     showNotification(`Starting export of ${total} conversations...`, 'info');
     
-    // For very large projects (>100 conversations), use streaming approach
+    // Use memory-efficient processing for large projects
     if (total > 100) {
         return await processLargeProject(orgId, conversationsList, batchSize);
     }
@@ -327,11 +327,12 @@ async function fetchAllConversations(orgId, conversationsList, batchSize = 5) {
         
         // Update progress
         const progress = Math.min(i + batchSize, total);
-        showNotification(`Exported ${progress}/${total} conversations...`, 'info');
+        showNotification(`Fetched ${progress}/${total} conversations...`, 'info');
         
-        // Rate limit between batches
+        // Rate limit between batches - adaptive based on project size
         if (i + batchSize < total) {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            const delay = total > 50 ? 750 : 500; // Slightly longer delay for medium projects
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
     
@@ -339,21 +340,19 @@ async function fetchAllConversations(orgId, conversationsList, batchSize = 5) {
     return conversations;
 }
 
-// Memory-efficient processing for large projects (>100 conversations)
+// Memory-efficient processing for large projects - now returns all conversations
 async function processLargeProject(orgId, conversationsList, batchSize = 5) {
-    console.log('🔄 Using streaming approach for large project...');
+    console.log('🔄 Processing large project with memory-efficient approach...');
     
     const total = conversationsList.length;
-    const chunkSize = 50; // Process in chunks of 50
+    const chunkSize = 50; // Process in chunks of 50 for memory efficiency
     let allConversations = [];
-    let chunkNumber = 1;
+    let processedCount = 0;
     
     // Process conversations in chunks to manage memory
     for (let i = 0; i < total; i += chunkSize) {
         const chunk = conversationsList.slice(i, Math.min(i + chunkSize, total));
-        console.log(`🗂️ Processing chunk ${chunkNumber}/${Math.ceil(total / chunkSize)} (${chunk.length} conversations)`);
-        
-        const chunkConversations = [];
+        console.log(`🗂️ Processing chunk ${Math.floor(i/chunkSize) + 1}/${Math.ceil(total / chunkSize)} (${chunk.length} conversations)`);
         
         // Process chunk in batches
         for (let j = 0; j < chunk.length; j += batchSize) {
@@ -371,54 +370,38 @@ async function processLargeProject(orgId, conversationsList, batchSize = 5) {
             
             for (const result of batchResults) {
                 if (result.status === 'fulfilled' && result.value.data) {
-                    chunkConversations.push(result.value);
+                    allConversations.push(result.value);
                 } else {
                     console.warn('⚠️ Skipped failed conversation');
                 }
             }
             
+            processedCount += batch.length;
+            
             // Update progress
-            const progress = i + j + batch.length;
-            showNotification(`Processing: ${progress}/${total} conversations...`, 'info');
+            showNotification(`Processing: ${processedCount}/${total} conversations...`, 'info');
             
-            // Rate limit between batches
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // Rate limit between batches - increase delay for larger projects
+            const delay = total > 200 ? 1000 : 500;
+            await new Promise(resolve => setTimeout(resolve, delay));
         }
         
-        // For very large projects, download chunk immediately to save memory
-        if (total > 200) {
-            const chunkMarkdown = createChunkMarkdown(chunkConversations, chunkNumber);
-            const filename = `claude_project_chunk_${chunkNumber.toString().padStart(2, '0')}.md`;
-            downloadFile(filename, chunkMarkdown, 'text/markdown');
-            console.log(`📁 Downloaded chunk ${chunkNumber}: ${filename}`);
-            
-            // Don't keep chunk data in memory
-            chunkConversations.length = 0;
-        } else {
-            // Keep in memory for projects 100-200 conversations
-            allConversations.push(...chunkConversations);
-        }
-        
-        chunkNumber++;
-        
-        // Garbage collection hint
+        // Garbage collection hint for memory management
         if (typeof global !== 'undefined' && global.gc) {
             global.gc();
         }
     }
     
-    // For projects >200 conversations, create a master index file
-    if (total > 200) {
-        const indexMarkdown = createLargeProjectIndex(conversationsList, Math.ceil(total / chunkSize));
-        downloadFile('index.md', indexMarkdown, 'text/markdown');
-        showNotification(`✅ Large project exported as ${Math.ceil(total / chunkSize)} chunk files + index!`, 'success');
-        return []; // Return empty array as files were already downloaded
-    }
-    
+    console.log(`✅ Successfully processed ${allConversations.length}/${total} conversations`);
     return allConversations;
 }
 
+// DEPRECATED: These functions are no longer used as we always generate individual files
+// Keeping them commented for reference only
+
+/*
 function createChunkMarkdown(conversations, chunkNumber) {
+    // No longer used - we always create individual files
     let markdown = `# Claude Project Export - Chunk ${chunkNumber}\n\n`;
     markdown += `*Export Date: ${new Date().toLocaleString()}*\n`;
     markdown += `*Conversations in this chunk: ${conversations.length}*\n\n`;
@@ -433,6 +416,7 @@ function createChunkMarkdown(conversations, chunkNumber) {
 }
 
 function createLargeProjectIndex(conversationsList, totalChunks) {
+    // No longer used - we always create a single index.md with links to individual files
     let markdown = `# Claude Project Export - Large Project Index\n\n`;
     markdown += `*Export Date: ${new Date().toLocaleString()}*\n`;
     markdown += `*Total Conversations: ${conversationsList.length}*\n`;
@@ -465,6 +449,7 @@ function createLargeProjectIndex(conversationsList, totalChunks) {
     
     return markdown;
 }
+*/
 
 // ========= MARKDOWN CONVERSION =========
 function convertToMarkdown(conversation) {
@@ -549,7 +534,10 @@ function createIndexMarkdown(projectId, conversations) {
     );
     
     sorted.forEach((conv, index) => {
-        const filename = sanitizeFilename(conv.metadata.name);
+        // Include UUID suffix in filename for uniqueness
+        const uuid = conv.metadata.uuid || conv.data?.uuid || '';
+        const uuidSuffix = uuid ? `_${uuid.substring(0, 8)}` : '';
+        const filename = `${sanitizeFilename(conv.metadata.name)}${uuidSuffix}`;
         markdown += `${index + 1}. [${conv.metadata.name}](./${filename}.md)\n`;
         markdown += `   - Created: ${new Date(conv.metadata.created_at).toLocaleDateString()}\n`;
         markdown += `   - Updated: ${new Date(conv.metadata.updated_at).toLocaleDateString()}\n`;
@@ -626,22 +614,49 @@ function downloadFile(filename, content, mimeType) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function downloadIndividualFiles(conversations, projectId) {
+async function downloadIndividualFiles(conversations, projectId) {
     // Create index file first
     const indexMarkdown = createIndexMarkdown(projectId, conversations);
     downloadFile('index.md', indexMarkdown, 'text/markdown');
     
-    // Download each conversation with delay
-    conversations.forEach((conv, index) => {
-        setTimeout(() => {
-            const markdown = convertToMarkdown(conv);
-            const filename = `${sanitizeFilename(conv.metadata.name)}.md`;
-            downloadFile(filename, markdown, 'text/markdown');
-        }, index * 200); // 200ms delay between downloads
-    });
+    // Process downloads in batches for better performance
+    const batchSize = 10; // Download 10 files at a time
+    const total = conversations.length;
+    
+    for (let i = 0; i < total; i += batchSize) {
+        const batch = conversations.slice(i, Math.min(i + batchSize, total));
+        
+        // Download files in current batch
+        batch.forEach((conv, batchIndex) => {
+            setTimeout(() => {
+                const markdown = convertToMarkdown(conv);
+                // Add UUID suffix to prevent filename collisions
+                const uuid = conv.metadata.uuid || conv.data?.uuid || '';
+                const uuidSuffix = uuid ? `_${uuid.substring(0, 8)}` : '';
+                const filename = `${sanitizeFilename(conv.metadata.name)}${uuidSuffix}.md`;
+                downloadFile(filename, markdown, 'text/markdown');
+            }, batchIndex * 100); // 100ms delay within batch
+        });
+        
+        // Update progress
+        const progress = Math.min(i + batchSize, total);
+        console.log(`📥 Downloaded ${progress}/${total} conversation files`);
+        
+        // Wait before processing next batch (longer wait for larger projects)
+        if (i + batchSize < total) {
+            const batchDelay = total > 100 ? 2000 : 1000; // 2s for large projects, 1s for smaller
+            await new Promise(resolve => setTimeout(resolve, batchDelay));
+        }
+    }
+    
+    console.log(`✅ All ${total} conversation files downloaded successfully`);
 }
 
+// DEPRECATED: Combined file download is no longer used
+// We always generate individual files for better organization and performance
+/*
 function downloadCombinedFile(conversations, projectId) {
+    // No longer used - we always create individual files
     let combinedMarkdown = createIndexMarkdown(projectId, conversations);
     combinedMarkdown += `\n\n---\n\n# All Conversations\n\n`;
     
@@ -653,6 +668,7 @@ function downloadCombinedFile(conversations, projectId) {
     const filename = `claude_project_${projectId.substring(0, 8)}_export.md`;
     downloadFile(filename, combinedMarkdown, 'text/markdown');
 }
+*/
 
 // ========= MAIN EXECUTION FUNCTION =========
 async function exportProjectConversations() {
@@ -690,22 +706,17 @@ async function exportProjectConversations() {
             return;
         }
         
-        // Step 4: Download files
+        // Step 4: Download files - Always generate individual files
         if (conversations.length === 0 && conversationsList.length > 200) {
-            // Large project was already downloaded in chunks
+            // Large project was already downloaded - this shouldn't happen with new logic
             return;
         }
         
         showNotification(`Downloading ${conversations.length} conversations...`, 'info');
         
-        // Choose download method based on count
-        if (conversations.length <= 20) {
-            downloadIndividualFiles(conversations, projectId);
-            showNotification(`✅ Exported ${conversations.length} conversations as individual files!`, 'success');
-        } else {
-            downloadCombinedFile(conversations, projectId);
-            showNotification(`✅ Exported ${conversations.length} conversations as combined file!`, 'success');
-        }
+        // Always use individual file generation regardless of count
+        await downloadIndividualFiles(conversations, projectId);
+        showNotification(`✅ Exported ${conversations.length} conversations as individual files!`, 'success');
         
     } catch (error) {
         console.error('❌ Export failed:', error);

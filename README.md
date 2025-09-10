@@ -65,11 +65,11 @@ A comprehensive JavaScript tool that exports **ALL conversations** from a Claude
 - Automatically detects project and organization IDs from the current page
 - Supports projects of any size (1 to 1000+ conversations)
 
-### ✅ **Smart Memory Management**
-- **Small projects** (≤20 conversations): Individual `.md` files + `index.md`
-- **Medium projects** (21-100 conversations): Single combined `.md` file
-- **Large projects** (101-200 conversations): Chunked processing with combined file
-- **Very large projects** (>200 conversations): Automatic chunking into multiple files
+### ✅ **Consistent File Organization**
+- **All projects**: Individual `.md` files + `index.md` for better organization
+- **Unique naming**: Files include UUID prefixes to prevent collisions
+- **Smart batching**: Downloads are processed in batches to prevent browser overwhelm
+- **Memory efficient**: Large projects use chunked processing to manage memory usage
 
 ### ✅ **Comprehensive Data Export**
 - **Message content**: Human and Claude messages with timestamps
@@ -91,34 +91,26 @@ A comprehensive JavaScript tool that exports **ALL conversations** from a Claude
 - Memory usage optimization for large projects
 - Clear success/failure reporting
 
-## 📁 Output Formats
+## 📁 Output Format
 
-### Small Projects (≤20 conversations)
+### Consistent Individual File Structure (All Project Sizes)
 ```
-index.md                    # Master index with links to all conversations
-conversation_1.md          # Individual conversation files
-conversation_2.md
+index.md                           # Master index with project overview and links
+conversation-title_12345678.md    # Individual conversation files with UUID prefix
+another-conversation_87654321.md
+project-discussion_abcdef12.md
 ...
 ```
 
-### Medium Projects (21-100 conversations)
-```
-claude_project_[id]_export.md    # Single combined file with all conversations
-```
+### File Naming Convention
+- **Sanitized titles**: Special characters replaced with underscores
+- **UUID prefix**: First 8 characters of conversation UUID for uniqueness
+- **Example**: `My Project Chat` → `My_Project_Chat_a1b2c3d4.md`
 
-### Large Projects (101-200 conversations)
-```
-claude_project_[id]_export.md    # Combined file (processed in memory-efficient chunks)
-```
-
-### Very Large Projects (>200 conversations)
-```
-index.md                         # Master index linking to all chunks
-claude_project_chunk_01.md       # Chunk files (50 conversations each)
-claude_project_chunk_02.md
-claude_project_chunk_03.md
-...
-```
+### Processing Strategy by Size
+- **Small (≤50)**: Fast batch processing (10 files at a time)
+- **Medium (51-100)**: Optimized delays for browser stability
+- **Large (>100)**: Extended delays and memory management to prevent crashes
 
 ## 🔧 Technical Architecture
 
@@ -184,10 +176,12 @@ The tool includes built-in rate limiting to respect Claude's API:
 - Automatic retry logic (up to 3 attempts per conversation)
 
 ### Memory Management
-For large projects:
-- Conversations are processed in batches of 5
-- Memory is cleared between chunks
-- Very large projects (>200 conversations) download incrementally
+For all projects:
+- Conversations are fetched in batches of 5
+- Files are downloaded in batches of 10
+- Adaptive delays based on project size (500ms to 2s)
+- Memory-efficient processing for projects >100 conversations
+- Garbage collection hints for optimal memory usage
 
 ## 📊 Testing
 
@@ -210,7 +204,7 @@ The tool has been designed and tested for various scenarios:
 | **URL Pattern** | `/chat/[uuid]` | `/project/[uuid]` |
 | **API Endpoint** | Direct conversation API | Project conversations list API |
 | **Memory Handling** | Simple | Chunked for large projects |
-| **Output** | 2 files (.md + .json) | Multiple files or chunked files |
+| **Output** | 2 files (.md + .json) | Individual files + index.md |
 | **Organization ID** | Multiple fallback methods | Cookie-first approach |
 
 ## 🚨 Important Notes

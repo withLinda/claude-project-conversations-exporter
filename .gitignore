@@ -39,6 +39,7 @@ conversations_v2 (1).json
 
 # Development instruction files
 Project-conversations-exporter-instruction.MD
+CLAUDE.md
 
 # Build/Distribution
 dist/

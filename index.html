@@ -402,33 +402,44 @@ document.head.appendChild(script);</pre>
         </div>
     </div>
 
-    <h2>🔧 Output Formats</h2>
+    <h2>🔧 Output Format</h2>
+    
+    <div class="success">
+        <h3>📁 Consistent Individual File Export</h3>
+        <p><strong>All projects now generate individual files for better organization!</strong></p>
+        <ul>
+            <li><strong>Index file:</strong> <code>index.md</code> - Contains project overview and links to all conversations</li>
+            <li><strong>Individual files:</strong> Each conversation saved as <code>[conversation-name]_[uuid-prefix].md</code></li>
+            <li><strong>Unique naming:</strong> UUID prefixes prevent filename collisions</li>
+            <li><strong>Scalable:</strong> Works efficiently for projects of any size (1 to 1000+ conversations)</li>
+        </ul>
+    </div>
     
     <table class="comparison-table">
         <tr>
             <th>Project Size</th>
-            <th>Output Format</th>
+            <th>Processing Strategy</th>
             <th>Files Generated</th>
         </tr>
         <tr>
-            <td>≤ 20 conversations</td>
-            <td>Individual files</td>
-            <td><code>index.md</code> + individual <code>.md</code> files</td>
+            <td>All sizes</td>
+            <td>Individual files with batch processing</td>
+            <td><code>index.md</code> + individual <code>.md</code> files for each conversation</td>
         </tr>
         <tr>
-            <td>21-100 conversations</td>
-            <td>Combined file</td>
-            <td>Single <code>claude_project_[id]_export.md</code></td>
+            <td>Small (≤50)</td>
+            <td>Fast batch download (10 files at a time)</td>
+            <td>Same format, quicker processing</td>
         </tr>
         <tr>
-            <td>101-200 conversations</td>
-            <td>Chunked processing</td>
-            <td>Single combined file (memory optimized)</td>
+            <td>Medium (51-100)</td>
+            <td>Memory-efficient processing with delays</td>
+            <td>Same format, optimized for browser stability</td>
         </tr>
         <tr>
-            <td>> 200 conversations</td>
-            <td>Multiple chunks</td>
-            <td><code>index.md</code> + <code>chunk_01.md</code>, <code>chunk_02.md</code>, etc.</td>
+            <td>Large (>100)</td>
+            <td>Chunked processing with extended delays</td>
+            <td>Same format, prevents browser overwhelm</td>
         </tr>
     </table>
 

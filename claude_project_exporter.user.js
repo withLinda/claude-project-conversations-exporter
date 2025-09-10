@@ -363,10 +363,12 @@
             }
 
             const progress = Math.min(i + batchSize, total);
-            showNotification(`Exported ${progress}/${total} conversations...`, 'info');
+            showNotification(`Fetched ${progress}/${total} conversations...`, 'info');
 
+            // Rate limit between batches - adaptive based on project size
             if (i + batchSize < total) {
-                await new Promise(resolve => setTimeout(resolve, 500));
+                const delay = total > 50 ? 750 : 500; // Slightly longer delay for medium projects
+                await new Promise(resolve => setTimeout(resolve, delay));
             }
         }
 
@@ -558,7 +560,10 @@
 
         const sorted = conversations.sort((a, b) => new Date(b.metadata.updated_at) - new Date(a.metadata.updated_at));
         sorted.forEach((conv, index) => {
-            const filename = sanitizeFilename(conv.metadata.name);
+            // Include UUID suffix in filename for uniqueness
+            const uuid = conv.metadata.uuid || conv.data?.uuid || '';
+            const uuidSuffix = uuid ? `_${uuid.substring(0, 8)}` : '';
+            const filename = `${sanitizeFilename(conv.metadata.name)}${uuidSuffix}`;
             markdown += `${index + 1}. [${conv.metadata.name}](./${filename}.md)\n`;
             markdown += `   - Created: ${new Date(conv.metadata.created_at).toLocaleDateString()}\n`;
             markdown += `   - Updated: ${new Date(conv.metadata.updated_at).toLocaleDateString()}\n`;
@@ -630,17 +635,42 @@
         setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function downloadIndividualFiles(conversations, projectId) {
+    async function downloadIndividualFiles(conversations, projectId) {
+        // Create index file first
         const indexMarkdown = createIndexMarkdown(projectId, conversations);
         downloadFile('index.md', indexMarkdown, 'text/markdown');
-
-        conversations.forEach((conv, index) => {
-            setTimeout(() => {
-                const markdown = convertToMarkdown(conv);
-                const filename = `${sanitizeFilename(conv.metadata.name)}.md`;
-                downloadFile(filename, markdown, 'text/markdown');
-            }, index * 200);
-        });
+        
+        // Process downloads in batches for better performance
+        const batchSize = 10; // Download 10 files at a time
+        const total = conversations.length;
+        
+        for (let i = 0; i < total; i += batchSize) {
+            const batch = conversations.slice(i, Math.min(i + batchSize, total));
+            
+            // Download files in current batch
+            batch.forEach((conv, batchIndex) => {
+                setTimeout(() => {
+                    const markdown = convertToMarkdown(conv);
+                    // Add UUID suffix to prevent filename collisions
+                    const uuid = conv.metadata.uuid || conv.data?.uuid || '';
+                    const uuidSuffix = uuid ? `_${uuid.substring(0, 8)}` : '';
+                    const filename = `${sanitizeFilename(conv.metadata.name)}${uuidSuffix}.md`;
+                    downloadFile(filename, markdown, 'text/markdown');
+                }, batchIndex * 100); // 100ms delay within batch
+            });
+            
+            // Update progress
+            const progress = Math.min(i + batchSize, total);
+            console.log(`📥 Downloaded ${progress}/${total} conversation files`);
+            
+            // Wait before processing next batch (longer wait for larger projects)
+            if (i + batchSize < total) {
+                const batchDelay = total > 100 ? 2000 : 1000; // 2s for large projects, 1s for smaller
+                await new Promise(resolve => setTimeout(resolve, batchDelay));
+            }
+        }
+        
+        console.log(`✅ All ${total} conversation files downloaded successfully`);
     }
 
     function downloadCombinedFile(conversations, projectId) {
@@ -696,13 +726,9 @@
 
             showNotification(`Downloading ${conversations.length} conversations...`, 'info');
 
-            if (conversations.length <= 20) {
-                downloadIndividualFiles(conversations, projectId);
-                showNotification(`✅ Exported ${conversations.length} conversations as individual files!`, 'success');
-            } else {
-                downloadCombinedFile(conversations, projectId);
-                showNotification(`✅ Exported ${conversations.length} conversations as combined file!`, 'success');
-            }
+            // Always use individual file generation regardless of count
+            await downloadIndividualFiles(conversations, projectId);
+            showNotification(`✅ Exported ${conversations.length} conversations as individual files!`, 'success');
 
         } catch (error) {
             console.error('❌ Export failed:', error);
